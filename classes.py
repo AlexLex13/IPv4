@@ -25,7 +25,7 @@ class IPAdress:
         self.subnet_class = self.class_type(self.bin_split_mask)
 
     def __str__(self):
-        if self.subnet_class == 8:
+        if self.subnet_class == 24:
             return """Network class - A
                 Subnet mask - 255.0.0.0
                 Starting address - 1.0.0.0\tEnd address - 126.255.255.255
@@ -37,7 +37,7 @@ class IPAdress:
                 Starting address - 128.0.0.0\tEnd address - 191.255.255.255
                 Number of possible subnets - 16 384\tNumber of possible hosts - 65 534\n"""
 
-        elif self.subnet_class == 24:
+        elif self.subnet_class == 8:
             return """Network class - C
                     Subnet mask - 255.255.255.0
                     Starting address - 192.0.0.0\tEnd address - 223.255.255.255
@@ -53,7 +53,7 @@ class IPAdress:
                     Reserved addresses
                     Starting address - 240.0.0.0\tEnd address - 225.255.255.255\n"""
 
-    def get_bin_subnet_mask(self, number_of_networks, number_of_hosts):
+    def get_subnet_mask(self, number_of_networks, number_of_hosts):
 
         subnet_bits, bits_for_host = len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:])
         print(subnet_bits, bits_for_host)
