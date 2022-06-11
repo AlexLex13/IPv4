@@ -2,13 +2,13 @@ class IPAdress:
     @classmethod
     def class_type(cls, bin_mask):
         if bin_mask[0][0] == '0':
-            return 8
+            return 24
 
         elif bin_mask[0][:2] == '10':
             return 16
 
         elif bin_mask[0][:3] == '110':
-            return 24
+            return 8
 
         elif bin_mask[0][:4] == '1110':
             return -1
@@ -22,7 +22,7 @@ class IPAdress:
         print(self.split_mask)
         self.bin_split_mask = [str(bin(int(octet)))[2:].zfill(8) for octet in self.split_mask]
         print(self.bin_split_mask)
-        self.subnet_class = IPAdress.class_type(self.bin_split_mask)
+        self.subnet_class = self.class_type(self.bin_split_mask)
 
     def __str__(self):
         if self.subnet_class == 8:
@@ -58,7 +58,7 @@ class IPAdress:
         subnet_bits, bits_for_host = len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:])
         print(subnet_bits, bits_for_host)
 
-        if subnet_bits + bits_for_host <= count_z_bits:
+        if subnet_bits + bits_for_host <= self.subnet_class:
             print(f"255.255.{int('1' * subnet_bits, 2) << (8 - subnet_bits)}.0")
             return subnet_bits, bits_for_host
 
