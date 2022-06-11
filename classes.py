@@ -1,6 +1,7 @@
 class IPAdress:
-    @classmethod
-    def class_type(cls, binmsk):
+
+    @staticmethod
+    def __class_type(binmsk):
         bin_mask = binmsk.split('.')
         if bin_mask[0][0] == '0':
             return 24, '255.0.0.0'
@@ -23,7 +24,7 @@ class IPAdress:
     def __init__(self, adr):
         self.str_adr = adr
         self.bin_split_mask = self.dec_to_bin()
-        self.net_class, self.net_mask = self.class_type(self.bin_split_mask)
+        self.net_class, self.net_mask = self.__class_type(self.bin_split_mask)
 
     def __str__(self):
         if self.net_class == 24:
@@ -60,8 +61,7 @@ class IPAdress:
         print(subnet_bits, bits_for_host)
 
         if subnet_bits + bits_for_host <= self.net_class:
-
-            return subnet_bits, bits_for_host
+            return self.dec_to_bin()[0:self.net_class+2] + '1' * subnet_bits + '0' * bits_for_host
 
         else:
             return -1

@@ -7,6 +7,8 @@ print(net)
 number_of_networks = int(input("Enter number of subnets: "))
 number_of_hosts = int(input("Enter number of hosts: "))
 
+print(net.get_subnet_mask(number_of_networks, number_of_hosts))
+
 # choise = 'y'
 # while choise != 'n':
 #     concrete_network, concrete_host = int(input("Enter a specific subnet: ")), int(input("Enter a specific host: "))
