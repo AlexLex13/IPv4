@@ -53,4 +53,14 @@ class IPAdress:
                     Reserved addresses
                     Starting address - 240.0.0.0\tEnd address - 225.255.255.255\n"""
 
+    def get_bin_subnet_mask(self, number_of_networks, number_of_hosts):
 
+        subnet_bits, bits_for_host = len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:])
+        print(subnet_bits, bits_for_host)
+
+        if subnet_bits + bits_for_host <= count_z_bits:
+            print(f"255.255.{int('1' * subnet_bits, 2) << (8 - subnet_bits)}.0")
+            return subnet_bits, bits_for_host
+
+        else:
+            return -1

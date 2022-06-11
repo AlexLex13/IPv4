@@ -4,6 +4,9 @@ mask = input("Enter the network in the given format {X.X.X.X}: ")
 net = IPAdress(mask)
 print(net)
 
+number_of_networks = int(input("Enter number of subnets: "))
+number_of_hosts = int(input("Enter number of hosts: "))
+
 # choise = 'y'
 # while choise != 'n':
 #     concrete_network, concrete_host = int(input("Enter a specific subnet: ")), int(input("Enter a specific host: "))
