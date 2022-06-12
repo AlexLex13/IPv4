@@ -18,12 +18,13 @@ class IPAdress:
         elif bin_mask[0][:5] == '11110':
             return -2, '-2'
 
-    def dec_to_bin(self):
-        return '.'.join([str(bin(int(octet)))[2:].zfill(8) for octet in self.str_adr.split('.')])
+    @staticmethod
+    def dec_to_bin(adr):
+        return '.'.join([str(bin(int(octet)))[2:].zfill(8) for octet in adr.split('.')])
 
     def __init__(self, adr):
         self.str_adr = adr
-        self.bin_split_mask = self.dec_to_bin()
+        self.bin_split_mask = self.dec_to_bin(self.str_adr)
         self.net_class, self.net_mask = self.__class_type(self.bin_split_mask)
 
     def __str__(self):
@@ -61,7 +62,7 @@ class IPAdress:
         print(subnet_bits, bits_for_host)
 
         if subnet_bits + bits_for_host <= self.net_class:
-            return self.dec_to_bin()[0:self.net_class+2] + '1' * subnet_bits + '0' * bits_for_host
+            return self.dec_to_bin(self.net_mask)[0:self.net_class+2] + '1' * subnet_bits + '0' * bits_for_host
 
         else:
             return -1
