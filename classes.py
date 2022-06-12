@@ -22,6 +22,10 @@ class IPAdress:
     def dec_to_bin(adr):
         return '.'.join([str(bin(int(octet)))[2:].zfill(8) for octet in adr.split('.')])
 
+    @staticmethod
+    def bin_to_dec(adr):
+        return '.'.join([str(int(octet, 2)) for octet in adr.split('.')])
+
     def __init__(self, adr):
         self.str_adr = adr
         self.bin_split_mask = self.dec_to_bin(self.str_adr)
@@ -64,7 +68,7 @@ class IPAdress:
         if subnet_bits + bits_for_host <= self.net_class:
             bin_subnet_mask = ''.join(self.dec_to_bin(self.net_mask).split('.')[:int((32 - self.net_class) / 8)]) + \
                               '1' * subnet_bits + '0' * (self.net_class - subnet_bits)
-            return '.'.join(list(map(''.join, zip(*[iter(bin_subnet_mask)]*8))))
+            return self.bin_to_dec('.'.join(list(map(''.join, zip(*[iter(bin_subnet_mask)] * 8)))))
 
         else:
             return -1
