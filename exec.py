@@ -1,13 +1,13 @@
-from classes import IPAdress
+from classes import IPAdress, sum_mask
 
 mask = input("Enter the network in the given format {X.X.X.X}: ")
 net = IPAdress(mask)
-print(net)
+print(sum_mask(net.str_adr, '255.255.0.0'))
 
-number_of_networks = int(input("Enter number of subnets: "))
-number_of_hosts = int(input("Enter number of hosts: "))
-
-print(net.get_subnet_mask(number_of_networks, number_of_hosts))
+# number_of_networks = int(input("Enter number of subnets: "))
+# number_of_hosts = int(input("Enter number of hosts: "))
+#
+# print(net.get_subnet_mask(number_of_networks, number_of_hosts))
 
 # choise = 'y'
 # while choise != 'n':

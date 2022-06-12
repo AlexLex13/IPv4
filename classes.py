@@ -27,7 +27,7 @@ class IPAdress:
         self.bin_split_mask = self.dec_to_bin(self.str_adr)
         self.net_class, self.net_mask = self.__class_type(self.bin_split_mask)
 
-    def __str__(self):
+    def info(self):
         if self.net_class == 24:
             return """Network class - A
                 Subnet mask - 255.0.0.0
@@ -62,7 +62,16 @@ class IPAdress:
         print(subnet_bits, bits_for_host)
 
         if subnet_bits + bits_for_host <= self.net_class:
-            return self.dec_to_bin(self.net_mask)[0:self.net_class+2] + '1' * subnet_bits + '0' * bits_for_host
+            return sum_mask(self.net_mask, self.str_adr)
 
         else:
             return -1
+
+    def __str__(self):
+        return self.str_adr
+
+
+def sum_mask(this, other):
+    this_list = this.split('.')
+    other_list = other.split('.')
+    return '.'.join([str(int(this_list[i]) | int(other_list[i])) for i in range(4)])
