@@ -62,7 +62,9 @@ class IPAdress:
         print(subnet_bits, bits_for_host)
 
         if subnet_bits + bits_for_host <= self.net_class:
-            return sum_mask(self.net_mask, self.str_adr)
+            bin_subnet_mask = ''.join(self.dec_to_bin(self.net_mask).split('.')[:int((32 - self.net_class) / 8)]) + \
+                              '1' * subnet_bits + '0' * (self.net_class - subnet_bits)
+            return '.'.join(list(map(''.join, zip(*[iter(bin_subnet_mask)]*8))))
 
         else:
             return -1
@@ -74,4 +76,4 @@ class IPAdress:
 def sum_mask(this, other):
     this_list = this.split('.')
     other_list = other.split('.')
-    return '.'.join([str(int(this_list[i]) | int(other_list[i])) for i in range(4)])
+    return '.'.join([str(int(this_list[i]) & int(other_list[i])) for i in range(4)])
