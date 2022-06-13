@@ -1,6 +1,6 @@
 from classes import IPAdress
 
-print('Programm start!')
+print('Program start!')
 ch = 'y'
 while ch != 'n':
     mask = input("Enter the network in the given format {X.X.X.X}: ")
