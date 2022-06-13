@@ -4,8 +4,7 @@ print('Program start!')
 ch = 'y'
 while ch != 'n':
     mask = input("Enter the network in the given format {X.X.X.X}: ")
-    number_of_networks = int(input("Enter number of subnets: "))
-    number_of_hosts = int(input("Enter number of hosts: "))
+    number_of_networks, number_of_hosts = int(input("Enter number of subnets: ")), int(input("Enter number of hosts: "))
 
     try:
         net = IPAdress(mask, number_of_networks, number_of_hosts)
@@ -15,8 +14,7 @@ while ch != 'n':
         print(SA)
     else:
         print(net.info())
-
-        print(net.get_subnet_mask())
+        print(net.subnet_mask())
 
         choise = 'y'
         while choise != 'n':
