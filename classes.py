@@ -1,7 +1,22 @@
 class IPAdress:
 
-    @staticmethod
-    def __class_type(binmsk):
+    def __init__(self, adr, number_of_networks, number_of_hosts):
+        self.adr = adr
+        self.net_class, self.net_mask = self.__class_type(self.dec_to_bin(self.adr))
+        self.verify_mask(len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:]), self.net_class)
+        self.subnet_bits, self.bits_for_host = len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:])
+
+    @classmethod
+    def verify_adr(cls, fio):
+        pass
+
+    @classmethod
+    def verify_mask(cls, subnet_bits, bits_for_host, net_class):
+        if subnet_bits + bits_for_host > net_class:
+            raise NetworkNotExist
+
+    @classmethod
+    def __class_type(cls, binmsk):
         bin_mask = binmsk.split('.')
         if bin_mask[0][0] == '0':
             return 24, '255.0.0.0'
@@ -18,29 +33,13 @@ class IPAdress:
         elif bin_mask[0][:5] == '11110':
             raise SpecialAdress
 
-    @staticmethod
-    def dec_to_bin(adr):
+    @classmethod
+    def dec_to_bin(cls, adr):
         return '.'.join([str(bin(int(octet)))[2:].zfill(8) for octet in adr.split('.')])
 
-    @staticmethod
-    def bin_to_dec(adr):
+    @classmethod
+    def bin_to_dec(cls, adr):
         return '.'.join([str(int(octet, 2)) for octet in adr.split('.')])
-
-    def __init__(self, adr, number_of_networks, number_of_hosts):
-        self.str_adr = adr
-        self.bin_split_mask = self.dec_to_bin(self.str_adr)
-        try:
-            self.net_class, self.net_mask = self.__class_type(self.bin_split_mask)
-            self.subnet_bits, self.bits_for_host = len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:])
-            if self.subnet_bits + self.bits_for_host > self.net_class:
-                raise NetworkNotExist
-
-        except NetworkNotExist as NNE:
-            print(NNE)
-        except SpecialAdress as SA:
-            print(SA)
-        else:
-            print(self.subnet_bits, self.bits_for_host)
 
     def info(self):
         if self.net_class == 24:
@@ -78,19 +77,54 @@ class IPAdress:
         return self.bin_to_dec('.'.join(list(map(''.join, zip(*[iter(bin_subnet_mask)] * 8)))))
 
     def concrete_adress(self, concrete_network, concrete_host):
-        result = ''.join(self.dec_to_bin(self.str_adr).split('.')[:int((32 - self.net_class) / 8)]) + \
+        result = ''.join(self.dec_to_bin(self.adr).split('.')[:int((32 - self.net_class) / 8)]) + \
                  bin(concrete_network)[2:].zfill(self.subnet_bits) + \
                  bin(concrete_host)[2:].zfill(self.net_class - self.subnet_bits)
         return self.bin_to_dec('.'.join(list(map(''.join, zip(*[iter(result)] * 8)))))
 
     def __str__(self):
-        return self.str_adr
+        return self.adr
 
+    @property
+    def adr(self):
+        return self.__adr
 
-def sum_mask(this, other):
-    this_list = this.split('.')
-    other_list = other.split('.')
-    return '.'.join([str(int(this_list[i]) & int(other_list[i])) for i in range(4)])
+    @adr.setter
+    def adr(self, adr):
+        self.verify_adr(adr)
+        self.__adr = adr
+
+    @property
+    def net_class(self):
+        return self.__net_class
+
+    @net_class.setter
+    def net_class(self, net_class):
+        self.__net_class = net_class
+
+    @property
+    def net_mask(self):
+        return self.__net_mask
+
+    @net_mask.setter
+    def net_mask(self, net_mask):
+        self.__net_mask = net_mask
+
+    @property
+    def subnet_bits(self):
+        return self.__subnet_bits
+
+    @subnet_bits.setter
+    def subnet_bits(self, subnet_bits):
+        self.__subnet_bits = subnet_bits
+
+    @property
+    def bits_for_host(self):
+        return self.__bits_for_host
+
+    @bits_for_host.setter
+    def bits_for_host(self, bits_for_host):
+        self.__bits_for_host = bits_for_host
 
 
 class NetworkNotExist(Exception):
