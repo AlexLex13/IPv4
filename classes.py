@@ -26,10 +26,12 @@ class IPAdress:
     def bin_to_dec(adr):
         return '.'.join([str(int(octet, 2)) for octet in adr.split('.')])
 
-    def __init__(self, adr):
+    def __init__(self, adr, number_of_networks, number_of_hosts):
         self.str_adr = adr
         self.bin_split_mask = self.dec_to_bin(self.str_adr)
         self.net_class, self.net_mask = self.__class_type(self.bin_split_mask)
+        self.subnet_bits, self.bits_for_host = len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:])
+        print(self.subnet_bits, self.bits_for_host)
 
     def info(self):
         if self.net_class == 24:
@@ -60,18 +62,21 @@ class IPAdress:
                     Reserved addresses
                     Starting address - 240.0.0.0\tEnd address - 225.255.255.255\n"""
 
-    def get_subnet_mask(self, number_of_networks, number_of_hosts):
+    def get_subnet_mask(self):
 
-        subnet_bits, bits_for_host = len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:])
-        print(subnet_bits, bits_for_host)
-
-        if subnet_bits + bits_for_host <= self.net_class:
+        if self.subnet_bits + self.bits_for_host <= self.net_class:
             bin_subnet_mask = ''.join(self.dec_to_bin(self.net_mask).split('.')[:int((32 - self.net_class) / 8)]) + \
-                              '1' * subnet_bits + '0' * (self.net_class - subnet_bits)
+                              '1' * self.subnet_bits + '0' * (self.net_class - self.subnet_bits)
             return self.bin_to_dec('.'.join(list(map(''.join, zip(*[iter(bin_subnet_mask)] * 8)))))
 
         else:
             return -1
+
+    def concrete_adress(self, concrete_network, concrete_host):
+        result = ''.join(self.dec_to_bin(self.str_adr).split('.')[:int((32 - self.net_class) / 8)]) + \
+                 bin(concrete_network)[2:].zfill(self.subnet_bits) + \
+                 bin(concrete_host)[2:].zfill(self.net_class - self.subnet_bits)
+        return self.bin_to_dec('.'.join(list(map(''.join, zip(*[iter(result)] * 8)))))
 
     def __str__(self):
         return self.str_adr
