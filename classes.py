@@ -1,14 +1,18 @@
+import re
+
+
 class IPAdress:
 
     def __init__(self, adr, number_of_networks, number_of_hosts):
         self.adr = adr
-        self.net_class, self.net_mask = self.__class_type(self.__dec_to_bin(self.adr))
+        self.net_class = self.__class_type(self.__dec_to_bin(self.adr))
         self.__verify_mask(len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:]), self.net_class)
         self.subnet_bits, self.bits_for_host = len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:])
 
     @classmethod
-    def verify_adr(cls, fio):
-        pass
+    def verify_adr(cls, adr):
+        if not re.match(r'^\d{,3}\.\d{,3}\.\d{,3}\.\d{,3}$', adr):
+            raise WrongFormat
 
     def __verify_mask(self, subnet_bits, bits_for_host, net_class):
         if net_class == -1 or net_class == -2:
@@ -21,19 +25,19 @@ class IPAdress:
     def __class_type(cls, binmsk):
         bin_mask = binmsk.split('.')
         if bin_mask[0][0] == '0':
-            return 24, '255.0.0.0'
+            return 24
 
         elif bin_mask[0][:2] == '10':
-            return 16, '255.255.0.0'
+            return 16
 
         elif bin_mask[0][:3] == '110':
-            return 8, '255.255.255.0'
+            return 8
 
         elif bin_mask[0][:4] == '1110':
-            return -1, None
+            return -1
 
         elif bin_mask[0][:5] == '11110':
-            return -2, None
+            return -2
 
     @classmethod
     def __dec_to_bin(cls, adr):
@@ -70,7 +74,7 @@ class IPAdress:
         elif self.net_class == -2:
             return """Network class - E
                     Reserved addresses
-                    Starting address - 240.0.0.0\tEnd address - 225.255.255.255\n"""
+                    Starting address - 240.0.0.0\tEnd address - 255.255.255.255\n"""
 
     def subnet_mask(self):
         bin_subnet_mask = ''.join(self.__dec_to_bin(self.net_mask).split('.')[:int((32 - self.net_class) / 8)]) + \
@@ -141,4 +145,12 @@ class SpecialAdress(Exception):
         super().__init__()
 
     def __str__(self):
-        return 'ERROR! It Is Special Adress!'
+        return 'It Is Special Adress!'
+
+
+class WrongFormat(Exception):
+    def __init__(self):
+        super().__init__()
+
+    def __str__(self):
+        return 'ERROR! Wrong Adress Format!'
