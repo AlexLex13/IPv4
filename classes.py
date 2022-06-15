@@ -9,13 +9,14 @@ class IPAdress:
         self.__verify_mask(len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:]), self.net_class)
         self.subnet_bits, self.bits_for_host = len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:])
 
-    @classmethod
-    def verify_adr(cls, adr):
+    def verify_adr(self, adr):
         if not re.match(r'^\d{,3}\.\d{,3}\.\d{,3}\.\d{,3}$', adr):
+            raise WrongFormat
+        elif not re.match(r'^[01]{8}\.[01]{8}\.[01]{8}\.[01]{8}$', self.__dec_to_bin(adr)):
             raise WrongFormat
 
     def __verify_mask(self, subnet_bits, bits_for_host, net_class):
-        if net_class == -1 or net_class == -2:
+        if net_class in (-1, -2, -3):
             print(self.info())
             raise SpecialAdress
         if subnet_bits + bits_for_host > net_class:
@@ -38,6 +39,8 @@ class IPAdress:
 
         elif bin_mask[0][:5] == '11110':
             return -2, None
+        else:
+            return -3, None
 
     @classmethod
     def __dec_to_bin(cls, adr):
@@ -51,19 +54,19 @@ class IPAdress:
         if self.net_class == 24:
             return """Network class - A
                 Subnet mask - 255.0.0.0
-                Starting address - 1.0.0.0\tEnd address - 126.255.255.255
+                Starting address - 1.0.0.0\tEnd address - 127.0.0.0
                 Number of possible subnets - 126\tNumber of possible hosts - 16 777 214\n"""
 
         elif self.net_class == 16:
             return """Network class - B
                 Subnet mask - 255.255.0.0
-                Starting address - 128.0.0.0\tEnd address - 191.255.255.255
+                Starting address - 128.0.0.0\tEnd address - 191.255.0.0
                 Number of possible subnets - 16 384\tNumber of possible hosts - 65 534\n"""
 
         elif self.net_class == 8:
             return """Network class - C
                     Subnet mask - 255.255.255.0
-                    Starting address - 192.0.0.0\tEnd address - 223.255.255.255
+                    Starting address - 192.0.0.0\tEnd address - 223.255.255.0
                     Number of possible subnets - 2 097 152\tNumber of possible hosts - 254\n"""
 
         elif self.net_class == -1:
@@ -74,7 +77,9 @@ class IPAdress:
         elif self.net_class == -2:
             return """Network class - E
                     Reserved addresses
-                    Starting address - 240.0.0.0\tEnd address - 255.255.255.255\n"""
+                    Starting address - 240.0.0.0\tEnd address - 254.255.255.255\n"""
+        else:
+            return "Special Adress\n"
 
     def subnet_mask(self):
         bin_subnet_mask = ''.join(self.__dec_to_bin(self.net_mask).split('.')[:int((32 - self.net_class) / 8)]) + \
