@@ -9,7 +9,7 @@ class IPAdress:
         self.__verify_mask(len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:]), self.net_class)
         self.subnet_bits, self.bits_for_host = len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:])
 
-    def verify_adr(self, adr):
+    def __verify_adr(self, adr):
         if not re.match(r'^\d{,3}\.\d{,3}\.\d{,3}\.\d{,3}$', adr):
             raise WrongFormat
         elif not re.match(r'^[01]{8}\.[01]{8}\.[01]{8}\.[01]{8}$', self.__dec_to_bin(adr)):
@@ -44,7 +44,7 @@ class IPAdress:
 
     @classmethod
     def __dec_to_bin(cls, adr):
-        return '.'.join([str(bin(int(octet)))[2:].zfill(8) for octet in adr.split('.')])
+        return '.'.join([bin(int(octet))[2:].zfill(8) for octet in adr.split('.')])
 
     @classmethod
     def __bin_to_dec(cls, adr):
@@ -101,7 +101,7 @@ class IPAdress:
 
     @adr.setter
     def adr(self, adr):
-        self.verify_adr(adr)
+        self.__verify_adr(adr)
         self.__adr = adr
 
     @property
