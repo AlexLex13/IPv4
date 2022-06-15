@@ -5,7 +5,7 @@ class IPAdress:
 
     def __init__(self, adr, number_of_networks, number_of_hosts):
         self.adr = adr
-        self.net_class = self.__class_type(self.__dec_to_bin(self.adr))
+        self.net_class, self.net_mask = self.__class_type(self.__dec_to_bin(self.adr))
         self.__verify_mask(len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:]), self.net_class)
         self.subnet_bits, self.bits_for_host = len(bin(number_of_networks)[2:]), len(bin(number_of_hosts)[2:])
 
@@ -25,19 +25,19 @@ class IPAdress:
     def __class_type(cls, binmsk):
         bin_mask = binmsk.split('.')
         if bin_mask[0][0] == '0':
-            return 24
+            return 24, '255.0.0.0'
 
         elif bin_mask[0][:2] == '10':
-            return 16
+            return 16, '255.255.0.0'
 
         elif bin_mask[0][:3] == '110':
-            return 8
+            return 8, '255.255.255.0'
 
         elif bin_mask[0][:4] == '1110':
-            return -1
+            return -1, None
 
         elif bin_mask[0][:5] == '11110':
-            return -2
+            return -2, None
 
     @classmethod
     def __dec_to_bin(cls, adr):
