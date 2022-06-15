@@ -1,4 +1,5 @@
-from classes import *
+import IPv4
+import tkinter
 
 print('Program start!')
 ch = 'y'
@@ -12,12 +13,12 @@ while ch != 'n':
     else:
 
         try:
-            net = IPAdress(mask, number_of_networks, number_of_hosts)
-        except WrongFormat as WF:
+            net = IPv4.IPAdress(mask, number_of_networks, number_of_hosts)
+        except IPv4.WrongFormat as WF:
             print(WF)
-        except SpecialAdress as SA:
+        except IPv4.SpecialAdress as SA:
             print(SA)
-        except NetworkNotExist as NNE:
+        except IPv4.NetworkNotExist as NNE:
             print(NNE)
         else:
             print(net.info())
@@ -32,7 +33,8 @@ while ch != 'n':
                     print(f'number_of_networks, number_of_hosts -> str')
                 else:
                     print(net.concrete_adress(concrete_network, concrete_host))
-                    choise = input("Do you want to count another address? (y/n) : ")
+
+                choise = input("Do you want to count another address? (y/n) : ")
 
     ch = input("Do you want to enter another network? (y/n) : ")
 else:
