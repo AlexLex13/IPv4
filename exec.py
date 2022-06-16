@@ -12,7 +12,7 @@ while ch != 'n':
     try:
         net = IPv4.IPAdress(mask, int(number_of_networks), int(number_of_hosts))
     except ValueError:
-        print(f'number_of_networks, number_of_hosts -> str')
+        print(f'Number_of_networks and number_of_hosts must be numbers!')
     except IPv4.WrongFormat as WF:
         print(WF)
     except IPv4.SpecialAdress as SA:
@@ -29,14 +29,14 @@ while ch != 'n':
                 concrete_network, concrete_host = int(input("Enter a concrete subnet: ")), \
                                                   int(input("Enter a concrete host: "))
                 if concrete_network > int(number_of_networks) or concrete_host > int(number_of_hosts):
-                    raise IPv4.WrongFormat
+                    raise IPv4.WrongNumber
 
                 print(net.concrete_adress(concrete_network, concrete_host))
 
             except ValueError:
-                print(f'number_of_networks, number_of_hosts -> str')
-            except IPv4.WrongFormat as WF:
-                print(WF)
+                print(f'Concrete_subnet and concrete_host must be numbers!')
+            except IPv4.WrongNumber as WN:
+                print(WN)
 
             choise = input("Do you want to count another address? (y/n) : ")
 

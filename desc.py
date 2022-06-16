@@ -7,7 +7,7 @@ def submit1():
     try:
         net = IPv4.IPAdress(entry_mask.get(), int(entry_number_of_networks.get()), int(entry_number_of_hosts.get()))
     except ValueError:
-        messagebox.showerror(message=f'number_of_networks, number_of_hosts -> str')
+        messagebox.showerror(message=f'Number_of_networks and number_of_hosts must be numbers!')
     except IPv4.WrongFormat as WF:
         messagebox.showerror(message=WF)
     except IPv4.SpecialAdress as SA:
@@ -37,14 +37,14 @@ def submit1():
             try:
                 if int(entry_concrete_network.get()) > int(entry_number_of_networks.get()) or \
                         int(entry_concrete_host.get()) > int(entry_number_of_hosts.get()):
-                    raise IPv4.WrongFormat
+                    raise IPv4.WrongNumber
 
                 l_output_res2 = tk.Label(frame_output2, text=net.concrete_adress(int(entry_concrete_network.get()),
                                                                                  int(entry_concrete_host.get())))
             except ValueError:
-                messagebox.showerror(message=f'number_of_networks, number_of_hosts -> str')
-            except IPv4.WrongFormat as WF:
-                messagebox.showerror(message=WF)
+                messagebox.showerror(message=f'Concrete_subnet and concrete_host must be numbers!')
+            except IPv4.WrongNumber as WN:
+                messagebox.showerror(message=WN)
             else:
                 l_output_res2.grid(column=0, row=0, padx=10, pady=10)
 

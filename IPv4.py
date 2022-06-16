@@ -159,3 +159,11 @@ class WrongFormat(Exception):
 
     def __str__(self):
         return 'ERROR! Wrong Adress Format!'
+
+
+class WrongNumber(Exception):
+    def __init__(self):
+        super().__init__()
+
+    def __str__(self):
+        return 'ERROR! Concrete_network/Concrete_host must not exceed Number_of_networks/Number_of_hosts!'
