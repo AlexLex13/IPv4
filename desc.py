@@ -1,17 +1,60 @@
 import IPv4
 import tkinter as tk
+from tkinter import messagebox
 
 
-def submit():
-    net = IPv4.IPAdress(entry_mask.get(), int(entry_number_of_networks.get()), int(entry_number_of_hosts.get()))
-    print(net.info())
-    print(net.subnet_mask())
-    l_output_res = tk.Label(frame_output1, text=net.info())
-    l_output_res.grid(column=0, row=0, padx=10, pady=10)
+def submit1():
+    try:
+        net = IPv4.IPAdress(entry_mask.get(), int(entry_number_of_networks.get()), int(entry_number_of_hosts.get()))
+    except ValueError:
+        messagebox.showerror(message=f'number_of_networks, number_of_hosts -> str')
+    except IPv4.WrongFormat as WF:
+        messagebox.showerror(message=WF)
+    except IPv4.SpecialAdress as SA:
+        messagebox.showerror(message=SA)
+    except IPv4.NetworkNotExist as NNE:
+        messagebox.showerror(message=NNE)
+    else:
+        l_output_res = tk.Label(frame_output1, text=f"{net.info()}\n{net.subnet_mask()}")
+        l_output_res.grid(column=0, row=0, padx=10, pady=10)
+
+        frame_input2 = tk.Frame(window, bg='green')
+        frame_input2.grid(column=0, row=2, sticky='we')
+
+        l_input_concrete_network = tk.Label(frame_input2, text='Enter a concrete subnet:')
+        l_input_concrete_network.grid(column=0, row=0, padx=10, pady=10)
+        entry_concrete_network = tk.Entry(frame_input2)
+        entry_concrete_network.grid(column=1, row=0, padx=10, pady=10)
+
+        l_input_concrete_host = tk.Label(frame_input2, text='Enter a concrete host:')
+        l_input_concrete_host.grid(column=0, row=1, padx=10, pady=10)
+        entry_concrete_host = tk.Entry(frame_input2)
+        entry_concrete_host.grid(column=1, row=1, padx=10, pady=10)
+
+        def submit2():
+            frame_output2 = tk.Frame(window, bg='red')
+            frame_output2.grid(column=0, row=3, sticky='we')
+            try:
+                if int(entry_concrete_network.get()) > int(entry_number_of_networks.get()) or \
+                        int(entry_concrete_host.get()) > int(entry_number_of_hosts.get()):
+                    raise IPv4.WrongFormat
+
+                l_output_res2 = tk.Label(frame_output2, text=net.concrete_adress(int(entry_concrete_network.get()),
+                                                                                 int(entry_concrete_host.get())))
+            except ValueError:
+                messagebox.showerror(message=f'number_of_networks, number_of_hosts -> str')
+            except IPv4.WrongFormat as WF:
+                messagebox.showerror(message=WF)
+            else:
+                l_output_res2.grid(column=0, row=0, padx=10, pady=10)
+
+        send_button2 = tk.Button(frame_input2, text='submit2', command=submit2)
+        send_button2.grid(column=0, row=2, columnspan=2, padx=10, pady=10)
 
 
 window = tk.Tk()
 window.title('IPv4')
+window.resizable(width=False, height=False)
 
 frame_input1 = tk.Frame(window, bg='blue')
 frame_output1 = tk.Frame(window, bg='yellow')
@@ -33,17 +76,7 @@ l_input_number_of_hosts.grid(column=0, row=2, padx=10, pady=10)
 entry_number_of_hosts = tk.Entry(frame_input1)
 entry_number_of_hosts.grid(column=1, row=2, padx=10, pady=10)
 
-l_input_concrete_network = tk.Label(frame_input1, text='Enter a concrete subnet:')
-l_input_concrete_network.grid(column=0, row=3, padx=10, pady=10)
-entry_concrete_network = tk.Entry(frame_input1)
-entry_concrete_network.grid(column=1, row=3, padx=10, pady=10)
-
-l_input_concrete_host = tk.Label(frame_input1, text='Enter a concrete host:')
-l_input_concrete_host.grid(column=0, row=4, padx=10, pady=10)
-entry_concrete_host = tk.Entry(frame_input1)
-entry_concrete_host.grid(column=1, row=4, padx=10, pady=10)
-
-send_button = tk.Button(frame_input1, text='submit', command=submit)
-send_button.grid(column=0, row=5, columnspan=2, padx=10, pady=10)
+send_button1 = tk.Button(frame_input1, text='submit', command=submit1)
+send_button1.grid(column=0, row=3, columnspan=2, padx=10, pady=10)
 
 window.mainloop()
