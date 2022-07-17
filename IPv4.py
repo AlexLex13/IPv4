@@ -158,7 +158,7 @@ class WrongFormat(Exception):
         super().__init__()
 
     def __str__(self):
-        return 'ERROR! Wrong Adress Format!'
+        return 'ERROR! Wrong Adress Format! Must be number.number.number.number'
 
 
 class WrongNumber(Exception):
